@@ -1,4 +1,4 @@
-﻿/************************************************************************
+/************************************************************************
    AvalonDock
 
    Copyright (C) 2007-2013 Xceed Software Inc.
@@ -225,6 +225,31 @@ namespace AvalonDock.Controls
 		}
 
 		#endregion IsActive
+
+		#region IsGrouped
+
+		/// <summary><see cref="IsGrouped"/> dependency property.</summary>
+		public static readonly DependencyProperty IsGroupedProperty = DependencyProperty.Register(nameof(IsGrouped), typeof(bool), typeof(LayoutItem),
+				new FrameworkPropertyMetadata(false, OnIsGroupedChanged));
+
+		/// <summary>Gets/sets wether the item is selected inside its container or not.</summary>
+		[Bindable(true), Description("Gets/sets wether the item is grouped inside its container or not."), Category("Other")]
+		public bool IsGrouped
+		{
+			get => (bool)GetValue(IsGroupedProperty);
+			set => SetValue(IsGroupedProperty, value);
+		}
+
+		/// <summary>Handles changes to the <see cref="IsGrouped"/> property.</summary>
+		private static void OnIsGroupedChanged(DependencyObject d, DependencyPropertyChangedEventArgs e) => ((LayoutItem)d).OnIsGroupedChanged(e);
+
+		/// <summary>Provides derived classes an opportunity to handle changes to the <see cref="IsGrouped"/> property.</summary>
+		protected virtual void OnIsGroupedChanged(DependencyPropertyChangedEventArgs e)
+		{
+			if (LayoutElement != null) LayoutElement.IsGrouped = (bool)e.NewValue;
+		}
+
+		#endregion IsGrouped
 
 		#region CanClose
 
