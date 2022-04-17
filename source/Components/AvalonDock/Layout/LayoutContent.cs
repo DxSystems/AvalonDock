@@ -207,6 +207,33 @@ namespace AvalonDock.Layout
 
 		#endregion IsActive
 
+		#region IsGrouped
+
+		private bool _isGrouped = false;
+
+		public bool IsGrouped
+		{
+			get => _isGrouped;
+			set
+			{
+				if (value == _isGrouped) return;
+				var oldValue = _isGrouped;
+				RaisePropertyChanging(nameof(IsGrouped));
+				_isGrouped = value;
+				OnIsGroupedChanged(oldValue, value);
+				RaisePropertyChanged(nameof(IsGrouped));
+			}
+		}
+
+		/// <summary>
+		/// Provides derived classes an opportunity to handle changes to the <see cref="IsGrouped"/> property.
+		/// </summary>
+		protected virtual void OnIsGroupedChanged(bool oldValue, bool newValue) => IsGroupedChanged?.Invoke(this, EventArgs.Empty);
+
+		public event EventHandler IsGroupedChanged;
+
+		#endregion IsGrouped
+
 		#region IsLastFocusedDocument
 
 		private bool _isLastFocusedDocument = false;
