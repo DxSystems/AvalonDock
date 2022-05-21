@@ -2253,6 +2253,22 @@ namespace AvalonDock
 				}
 			}
 
+			if (e.Action == NotifyCollectionChangedAction.Move)
+			{
+				LayoutDocumentPane documentPane = null;
+				if (Layout.LastFocusedDocument != null)
+				{
+					documentPane = Layout.LastFocusedDocument.Parent as LayoutDocumentPane;
+				}
+				if (documentPane == null)
+				{
+					documentPane = Layout.Descendents().OfType<LayoutDocumentPane>().FirstOrDefault();
+				}
+
+				if(documentPane != null)
+					documentPane.MoveChild(e.OldStartingIndex, e.NewStartingIndex);
+			}
+
 			Layout?.CollectGarbage();
 		}
 
