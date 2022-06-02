@@ -2208,6 +2208,8 @@ namespace AvalonDock
 					//if (documentPane == null)
 					//    throw new InvalidOperationException("Layout must contains at least one LayoutDocumentPane in order to host documents");
 					_suspendLayoutItemCreation = true;
+
+					var insertIndex = e.NewStartingIndex;
 					foreach (var documentContentToImport in e.NewItems)
 					{
 						var documentToImport = new LayoutDocument
@@ -2226,7 +2228,7 @@ namespace AvalonDock
 							if (documentPane == null)
 								throw new InvalidOperationException("Layout must contains at least one LayoutDocumentPane in order to host documents");
 
-							documentPane.Children.Add(documentToImport);
+							documentPane.Children.Insert(insertIndex, documentToImport);
 							added = true;
 						}
 
