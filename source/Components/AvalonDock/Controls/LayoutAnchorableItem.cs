@@ -1,4 +1,4 @@
-﻿/************************************************************************
+/************************************************************************
    AvalonDock
 
    Copyright (C) 2007-2013 Xceed Software Inc.
@@ -122,6 +122,29 @@ namespace AvalonDock.Controls
 		private void ExecuteAutoHideCommand(object parameter) => _anchorable?.Root?.Manager?.ExecuteAutoHideCommand(_anchorable);
 
 		#endregion AutoHideCommand
+
+		#region AutoHideAutoSize
+		/// <summary><see cref="AutoHideAutoSize"/> dependency property.</summary>
+		public static readonly DependencyProperty AutoHideAutoSizeProperty = DependencyProperty.Register(nameof(AutoHideAutoSize), typeof(bool), typeof(LayoutAnchorableItem), new FrameworkPropertyMetadata((bool)true,
+					OnAutoHideAutoSizeChanged));
+
+		/// <summary>Gets/sets the anchorable autodetect AutoHideWidth/AutoHideHeight base on ActualWidth/ActualHeight</summary>
+		[Bindable(true), Description("Gets/sets the anchorable autodetect AutoHideWidth/AutoHideHeight base on ActualWidth/ActualHeight."), Category("Anchorable")]
+		public bool AutoHideAutoSize
+		{
+			get => (bool)GetValue(AutoHideAutoSizeProperty);
+			set => SetValue(AutoHideAutoSizeProperty, value);
+		}
+
+		/// <summary>Handles changes to the <see cref="AutoHideAutoSize"/> property.</summary>
+		private static void OnAutoHideAutoSizeChanged(DependencyObject d, DependencyPropertyChangedEventArgs e) => ((LayoutAnchorableItem)d).OnCanHideChanged(e);
+
+		/// <summary>Provides derived classes an opportunity to handle changes to the <see cref="AutoHideAutoSize"/> property.</summary>
+		protected virtual void OnAutoHideAutoSizeChanged(DependencyPropertyChangedEventArgs e)
+		{
+			if (_anchorable != null) _anchorable.AutoHideAutoSize = (bool)e.NewValue;
+		}
+		#endregion
 
 		#region DockCommand
 

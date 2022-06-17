@@ -34,6 +34,8 @@ namespace AvalonDock.Layout
 		private bool _canHide = true;
 		private bool _canAutoHide = true;
 		private bool _canDockAsTabbedDocument = true;
+		private bool _autohideAutoSize = true;
+
 		// BD: 17.08.2020 Remove that bodge and handle CanClose=false && CanHide=true in XAML
 		//private bool _canCloseValueBeforeInternalSet;
 		private bool _canMove = true;
@@ -118,6 +120,18 @@ namespace AvalonDock.Layout
 
 				_autohideMinHeight = value;
 				RaisePropertyChanged(nameof(AutoHideMinHeight));
+			}
+		}
+
+		/// <summary>Gets/sets the anchorable autodetect AutoHideWidth/AutoHideHeight base on ActualWidth/ActualHeight</summary>
+		public bool AutoHideAutoSize
+		{
+			get => _autohideAutoSize;
+			set
+			{
+				if (value == _autohideAutoSize) return;
+				RaisePropertyChanging(nameof(AutoHideWidth));
+				RaisePropertyChanging(nameof(AutoHideHeight));
 			}
 		}
 
@@ -585,12 +599,31 @@ namespace AvalonDock.Layout
 				var parentPane = Parent as LayoutAnchorablePane;
 				var newAnchorGroup = new LayoutAnchorGroup();
 				((ILayoutPreviousContainer)newAnchorGroup).PreviousContainer = parentPane;
-
-				foreach (var anchorableToImport in parentPane.Children.ToArray())
-					newAnchorGroup.Children.Add(anchorableToImport);
+				var modelWithActualSize = Parent as ILayoutPositionableElementWithActualSize;
 
 				//detect anchor side for the pane
 				var anchorSide = parentPane.GetSide();
+
+				foreach (var anchorableToImport in parentPane.Children.ToArray())
+				{
+					if (anchorableToImport.AutoHideAutoSize)
+					{
+						if(modelWithActualSize != null)
+						{
+							if (anchorSide == AnchorSide.Left || anchorSide == AnchorSide.Right)
+							{
+								anchorableToImport.AutoHideWidth = modelWithActualSize.ActualWidth;
+							}
+							else if (anchorSide == AnchorSide.Top || anchorSide == AnchorSide.Bottom)
+							{
+								anchorableToImport.AutoHideHeight = modelWithActualSize.ActualHeight;
+							}
+						}
+					}
+
+					newAnchorGroup.Children.Add(anchorableToImport);
+				}
+
 
 				switch (anchorSide)
 				{

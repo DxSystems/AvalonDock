@@ -229,6 +229,7 @@
 							<Setter Property="ContentId" Value="{Binding Model.ContentId}" />
 							<Setter Property="IsSelected" Value="{Binding Model.IsSelected, Mode=TwoWay}" />
 							<Setter Property="IsActive" Value="{Binding Model.IsActive, Mode=TwoWay}" />
+							<Setter Property="AutoHideAutoSize" Value="True"/>
 						</Style>
 					</local:PanesStyleSelector.ToolStyle>
 					<local:PanesStyleSelector.FileStyle>
