@@ -120,6 +120,77 @@ to also theme standard elements, such as, button and textblock etc.
 
 # Mile Stone History
 
+
+## Fixes and Features Added in Version 4.72.0
+
+- [#436 Changed how the next active document is picked on document close.](https://github.com/Dirkster99/AvalonDock/pull/436) (thanx to [FredrikS fredriks123](https://github.com/fredriks123))
+- [#438 NullCheck for DragPoint](https://github.com/Dirkster99/AvalonDock/pull/438) (thanx to [Ben bbuerger](https://github.com/bbuerger))
+
+## Fixes and Features Added in Version 4.72.0
+
+- [#423 issue #422 DockingManager.LayoutItemTemplateSelector is applied twice because...](https://github.com/Dirkster99/AvalonDock/pull/423) (thanx to [Mona04](https://github.com/Mona04))
+
+- [#425 Fix: Potential NRE on app close](https://github.com/Dirkster99/AvalonDock/pull/425) (thanx to [Khaos66](https://github.com/Khaos66))
+
+- [#427 Fix floating windows still created twice](https://github.com/Dirkster99/AvalonDock/pull/427) (thanx to [Khaos66](https://github.com/Khaos66))
+
+- [Add DockingManager.ShowNavigator](https://github.com/Dirkster99/AvalonDock/pull/428) (thanx to [Calum Robinson](https://github.com/calumr))
+
+- [#431 Fix unwanted group orientation change when using mixed orientation](https://github.com/Dirkster99/AvalonDock/pull/431) (thanx to [KuroiRoy](https://github.com/KuroiRoy))
+
+## Fixes Added in Version 4.71.2
+
+- [#416 Fix Issue #226: Restore floating windows to maximized state](https://github.com/Dirkster99/AvalonDock/pull/416) (thanx to [Michael Möller](https://github.com/moellerm))
+
+- [#417 Close and active selected item when NavigatorWindow is inactive](https://github.com/Dirkster99/AvalonDock/pull/417) (thanx to [EQOH Noisrev](https://github.com/Noisrev))
+
+- [#418 Add active content handler to LayoutAnchorableFloatingWindow and improve the active content handlers](https://github.com/Dirkster99/AvalonDock/pull/418) (thanx to [EQOH Noisrev](https://github.com/Noisrev))
+
+## Fixes Added in Version 4.71.1
+
+- [#413 Fix the binding error in AnchorGroupTemplate](https://github.com/Dirkster99/AvalonDock/pull/413) (thanx to [EQOH Noisrev](https://github.com/Noisrev))
+
+- [#414 When apply new template, add back collection change event handler](https://github.com/Dirkster99/AvalonDock/pull/414) (thanx to [EQOH Noisrev](https://github.com/Noisrev))
+
+- [#415 Improved and fix floating window activation and activation pane](https://github.com/Dirkster99/AvalonDock/pull/415) (thanx to [EQOH Noisrev](https://github.com/Noisrev))
+
+## Fixes Added in Version 4.71.0
+
+- [#399 add open/close LayoutFlayoutingWindowsControl events](https://github.com/Dirkster99/AvalonDock/pull/399) (thanx to [Denis Smirnov](https://github.com/GonzRu))
+
+- [#400 set ResizeOverlay's owner always null](https://github.com/Dirkster99/AvalonDock/pull/400) (thanx to [Denis Smirnov](https://github.com/GonzRu))
+
+- [#401 remove unused variable from DocumentPaneTabPanel](https://github.com/Dirkster99/AvalonDock/pull/401) (thanx to [Denis Smirnov](https://github.com/GonzRu))
+
+- [#403 Add XmlSerializer cache to fix memory leaks.](https://github.com/Dirkster99/AvalonDock/pull/403) (thanx to [Pavel Kindruk](https://github.com/pkindruk))
+
+- [#404 Fix deserialized layout document close.](https://github.com/Dirkster99/AvalonDock/pull/404) (thanx to [Pavel Kindruk](https://github.com/pkindruk))
+
+- [#409 Restore previously activated document after closing active document](https://github.com/Dirkster99/AvalonDock/pull/409) (thanx to [L45eMy](https://github.com/L45eMy))
+
+- [#410 Improved activation of floating Windows](https://github.com/Dirkster99/AvalonDock/pull/410) (thanx to [EQOH Noisrev](https://github.com/Noisrev))
+
+- [#411 Add anchorable hide and close notifications to DockingManager](https://github.com/Dirkster99/AvalonDock/pull/411) (thanx to [John Stewien](https://github.com/stewienj))
+
+- [#412 Fix a issue where the dragged window still appeared above the overlay window](https://github.com/Dirkster99/AvalonDock/pull/412) (thanx to [EQOH Noisrev](https://github.com/Noisrev))
+
+## Fixes Added in Version 4.70.3
+
+- [#394 Fix the get owner DockingManagerWindow and Update drag and drop](https://github.com/Dirkster99/AvalonDock/pull/394) (thanx to [EQOH Noisrev](https://github.com/Noisrev))
+
+- [#393 Add Null check for GetWindowChrome](https://github.com/Dirkster99/AvalonDock/pull/393) (thanx to [EQOH Noisrev](https://github.com/Noisrev))
+
+- [#376 Prevents a known bug in WPF](https://github.com/Dirkster99/AvalonDock/pull/376) (thanx to [Ben Buerger](https://github.com/bbuerger))
+
+## Fixes Added in Version 4.70.2
+
+- [#338 Fixes #309 Anchorable Header not visible in generic theme](https://github.com/Dirkster99/AvalonDock/pull/338)   (thanx to [Darren Gosbell](https://github.com/dgosbell))
+- [#346 fix crash if some assembly not allow GetTypes()](https://github.com/Dirkster99/AvalonDock/pull/346)   (thanx to [Trivalik](https://github.com/trivalik))
+- [#347 #345 fix refresh when moving floating windows](https://github.com/Dirkster99/AvalonDock/pull/347)   (thanx to [Norberto Magni](https://github.com/nmagni))
+- [#357 LayoutAutoHideWindowControl: UI automation name](https://github.com/Dirkster99/AvalonDock/pull/357)   (thanx to [Ben](https://github.com/bbuerger))
+- [#363 Fixes #362 DockingManager with a Viewbox ancestor does not properly render auto-hidden LayoutAnchorables](https://github.com/Dirkster99/AvalonDock/pull/363)   (thanx to [Tim Cooke](https://github.com/timothylcooke))
+- [#367 Fix for #306 StartDraggingFloatingWindow](https://github.com/Dirkster99/AvalonDock/pull/367)   (thanx to [Muhahe](https://github.com/Muhahe))
+
 ## Fixes Added in Version 4.70.1
 
 - [#336 Keep ActiveContent when switching RootPanel](https://github.com/Dirkster99/AvalonDock/pull/336)   (thanx to [Khaos66](https://github.com/Khaos66))
