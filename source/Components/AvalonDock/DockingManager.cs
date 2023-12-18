@@ -53,6 +53,7 @@ namespace AvalonDock
 		private OverlayWindow _overlayWindow = null;
 		private List<IDropArea> _areas = null;
 		private bool _insideInternalSetActiveContent = false;
+		private bool _isActive = true;
 
 		// Collection of LayoutDocumentItems & LayoutAnchorableItems attached to their corresponding
 		// LayoutDocument & LayoutAnchorable
@@ -148,8 +149,28 @@ namespace AvalonDock
 
 		#region Public Properties
 
-		#region Layout
+		#region IsActive
 
+		/// <summary><see cref="Layout"/> dependency property.</summary>
+		public bool IsActive
+		{
+			get { return (bool)GetValue(IsActiveProperty); }
+			set { SetValue(IsActiveProperty, value); }
+		}
+
+		// Using a DependencyProperty as the backing store for IsActive.  This enables animation, styling, binding, etc...
+		public static readonly DependencyProperty IsActiveProperty =
+			DependencyProperty.Register(nameof(IsActive), typeof(bool), typeof(DockingManager), new PropertyMetadata(true, IsActiveChanged));
+
+		private static void IsActiveChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+		{
+			DockingManager control = (DockingManager)d;
+			control._isActive = (bool)e.NewValue;
+		}
+
+		#endregion
+
+		#region Layout
 		/// <summary><see cref="Layout"/> dependency property.</summary>
 		public static readonly DependencyProperty LayoutProperty = DependencyProperty.Register(nameof(Layout), typeof(LayoutRoot), typeof(DockingManager),
 				new FrameworkPropertyMetadata(null, OnLayoutChanged, CoerceLayoutValue));
@@ -288,7 +309,7 @@ namespace AvalonDock
 				new FrameworkPropertyMetadata(null, OnDocumentPaneTemplateChanged));
 
 		/// <summary>Gets/sets the <see cref="ControlTemplate"/> that can be used to render the <see cref="LayoutDocumentPaneControl"/>.</summary>
-		[Bindable(true), Description("Gets/sets the ControlTemplate´that can be used to render the LayoutDocumentPaneControl."), Category("Document")]
+		[Bindable(true), Description("Gets/sets the ControlTemplateВґthat can be used to render the LayoutDocumentPaneControl."), Category("Document")]
 		public ControlTemplate DocumentPaneTemplate
 		{
 			get => (ControlTemplate)GetValue(DocumentPaneTemplateProperty);
@@ -2081,6 +2102,9 @@ namespace AvalonDock
 		private void DockingManager_Loaded(object sender, RoutedEventArgs e)
 		{
 			if (DesignerProperties.GetIsInDesignMode(this)) return;
+
+			if (!_isActive) return;
+
 			if (Layout.Manager == this)
 			{
 				LayoutRootPanel = CreateUIElementForModel(Layout.RootPanel) as LayoutPanelControl;
