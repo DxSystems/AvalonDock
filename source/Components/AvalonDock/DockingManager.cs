@@ -135,6 +135,11 @@ namespace AvalonDock
 		public event EventHandler ActiveContentChanged;
 
 		/// <summary>
+		/// Event for changing active content
+		/// </summary>
+		public event EventHandler<CancelEventArgs> ActiveContentChanging;
+
+		/// <summary>
 		/// Event is raised when LayoutFloatingWindowControl created
 		/// </summary>
 		public event EventHandler<LayoutFloatingWindowControlCreatedEventArgs> LayoutFloatingWindowControlCreated;
@@ -1031,12 +1036,23 @@ namespace AvalonDock
 		/// <summary>Handles changes to the <see cref="ActiveContent"/> property.</summary>
 		private static void OnActiveContentChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
 		{
-			((DockingManager)d).InternalSetActiveContent(e.NewValue);
-			((DockingManager)d).OnActiveContentChanged(e);
+			DockingManager dockingManager = (DockingManager)d;
+			object newActiveContent = e.NewValue;
+			CancelEventArgs args = new CancelEventArgs();
+
+			dockingManager.OnActiveContentChanging(args);
+
+			if (!args.Cancel)
+			{
+				dockingManager.InternalSetActiveContent(newActiveContent);
+				dockingManager.OnActiveContentChanged(e);
+			}
 		}
 
 		/// <summary>Provides derived classes an opportunity to handle changes to the <see cref="ActiveContent"/> property.</summary>
 		protected virtual void OnActiveContentChanged(DependencyPropertyChangedEventArgs e) => ActiveContentChanged?.Invoke(this, EventArgs.Empty);
+
+		protected virtual void OnActiveContentChanging(CancelEventArgs e) => ActiveContentChanging?.Invoke(this, e);
 
 		#endregion ActiveContent
 

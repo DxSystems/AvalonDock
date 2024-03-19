@@ -1,4 +1,4 @@
-﻿/************************************************************************
+/************************************************************************
    AvalonDock
 
    Copyright (C) 2007-2013 Xceed Software Inc.
@@ -60,6 +60,10 @@ namespace AvalonDock.Layout
 				RaisePropertyChanged(nameof(Orientation));
 			}
 		}
+
+		[NonSerialized]
+		private Guid _id;
+		public Guid Id { get => _id; set => _id = value; }
 
 		#endregion Properties
 
