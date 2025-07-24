@@ -19,7 +19,7 @@ using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Interop;
 using System.Windows.Media;
-
+using System.Windows.Threading;
 using AvalonDock.Layout;
 using AvalonDock.Themes;
 
@@ -630,29 +630,33 @@ namespace AvalonDock.Controls
 			Activated -= OnActivated;
 
 			if (!_attachDrag || Mouse.LeftButton != MouseButtonState.Pressed) return;
-			var windowHandle = new WindowInteropHelper(this).Handle;
-			var mousePosition = this.PointToScreenDPI(Mouse.GetPosition(this));
 
-			var area = this.GetScreenArea();
-
-			// BugFix Issue #6
-			// This code is initializes the drag when content (document or toolwindow) is dragged
-			// A second chance back up plan if DragDelta is not set
-			if (DragDelta == default) DragDelta = new Point(3, 3);
-			Left = mousePosition.X - DragDelta.X;                 // BugFix Issue #6
-			Top = mousePosition.Y - DragDelta.Y;
-
-			if (this.GetScreenArea().Size != area.Size) // setting the top/left co-ordinates has changed the size - this means moving to a screen with a different DPI. Recalculate mouse position based on new DPI to avoid wrong drag location
+			Dispatcher.BeginInvoke(new Action(() =>
 			{
-				mousePosition = this.PointToScreenDPI(Mouse.GetPosition(this));
-				Left = mousePosition.X - DragDelta.X;
-				Top = mousePosition.Y - DragDelta.Y;
-			}
+				var windowHandle = new WindowInteropHelper(this).Handle;
+				var mousePosition = this.PointToScreenDPI(Mouse.GetPosition(this));
 
-			_attachDrag = false;
-			Show();
-			var lParam = new IntPtr(((int)mousePosition.X & 0xFFFF) | ((int)mousePosition.Y << 16));
-			Win32Helper.SendMessage(windowHandle, Win32Helper.WM_NCLBUTTONDOWN, new IntPtr(Win32Helper.HT_CAPTION), lParam);
+				var area = this.GetScreenArea();
+
+				// BugFix Issue #6
+				// This code is initializes the drag when content (document or toolwindow) is dragged
+				// A second chance back up plan if DragDelta is not set
+				if (DragDelta == default) DragDelta = new Point(3, 3);
+				Left = mousePosition.X - DragDelta.X;                 // BugFix Issue #6
+				Top = mousePosition.Y - DragDelta.Y;
+
+				if (this.GetScreenArea().Size != area.Size) // setting the top/left co-ordinates has changed the size - this means moving to a screen with a different DPI. Recalculate mouse position based on new DPI to avoid wrong drag location
+				{
+					mousePosition = this.PointToScreenDPI(Mouse.GetPosition(this));
+					Left = mousePosition.X - DragDelta.X;
+					Top = mousePosition.Y - DragDelta.Y;
+				}
+
+				_attachDrag = false;
+				Show();
+				var lParam = new IntPtr(((int)mousePosition.X & 0xFFFF) | ((int)mousePosition.Y << 16));
+				Win32Helper.SendMessage(windowHandle, Win32Helper.WM_NCLBUTTONDOWN, new IntPtr(Win32Helper.HT_CAPTION), lParam);
+			}), DispatcherPriority.Render);
 		}
 
 		private void UpdatePositionAndSizeOfPanes()

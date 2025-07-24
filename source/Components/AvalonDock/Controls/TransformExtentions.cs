@@ -16,6 +16,10 @@ namespace AvalonDock.Controls
 	{
 		public static Point PointToScreenDPI(this Visual visual, Point pt)
 		{
+			var presentationSource = PresentationSource.FromVisual(visual);
+			if (presentationSource is null)
+				return default;
+
 			Point resultPt = visual.PointToScreen(pt);
 			return TransformToDeviceDPI(visual, resultPt);
 		}
