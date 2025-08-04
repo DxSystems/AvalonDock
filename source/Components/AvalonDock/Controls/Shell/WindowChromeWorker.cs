@@ -1,4 +1,4 @@
-﻿/************************************************************************
+/************************************************************************
    AvalonDock
 
    Copyright (C) 2007-2013 Xceed Software Inc.
@@ -246,8 +246,8 @@ namespace Microsoft.Windows.Shell
 			var rcWindow = NativeMethods.GetWindowRect(_hwnd);
 			var rcAdjustedClient = _GetAdjustedWindowRect(rcWindow);
 
-			var rcLogicalWindow = DpiHelper.DeviceRectToLogical(new Rect(rcWindow.Left, rcWindow.Top, rcWindow.Width, rcWindow.Height));
-			var rcLogicalClient = DpiHelper.DeviceRectToLogical(new Rect(rcAdjustedClient.Left, rcAdjustedClient.Top, rcAdjustedClient.Width, rcAdjustedClient.Height));
+			var rcLogicalWindow = DpiHelper.DeviceRectToLogical(new Rect(rcWindow.Left, rcWindow.Top, rcWindow.Width, rcWindow.Height), _hwnd);
+			var rcLogicalClient = DpiHelper.DeviceRectToLogical(new Rect(rcAdjustedClient.Left, rcAdjustedClient.Top, rcAdjustedClient.Width, rcAdjustedClient.Height), _hwnd);
 
 			var nonClientThickness = new Thickness(
 			   rcLogicalWindow.Left - rcLogicalClient.Left,
@@ -334,7 +334,7 @@ namespace Microsoft.Windows.Shell
 			_hasUserMovedWindow = false;
 			var wp = NativeMethods.GetWindowPlacement(_hwnd);
 			var adjustedDeviceRc = _GetAdjustedWindowRect(new RECT { Bottom = 100, Right = 100 });
-			var adjustedTopLeft = DpiHelper.DevicePixelsToLogical(new Point(wp.rcNormalPosition.Left - adjustedDeviceRc.Left, wp.rcNormalPosition.Top - adjustedDeviceRc.Top));
+			var adjustedTopLeft = DpiHelper.DevicePixelsToLogical(new Point(wp.rcNormalPosition.Left - adjustedDeviceRc.Left, wp.rcNormalPosition.Top - adjustedDeviceRc.Top), _hwnd);
 			_window.Top = adjustedTopLeft.Y;
 			_window.Left = adjustedTopLeft.X;
 		}
@@ -363,7 +363,7 @@ namespace Microsoft.Windows.Shell
 				if (_window.WindowState != WindowState.Normal) return false;
 				var adjustedOffset = _GetAdjustedWindowRect(new RECT { Bottom = 100, Right = 100 });
 				var windowTopLeft = new Point(_window.Left, _window.Top);
-				windowTopLeft -= (Vector)DpiHelper.DevicePixelsToLogical(new Point(adjustedOffset.Left, adjustedOffset.Top));
+				windowTopLeft -= (Vector)DpiHelper.DevicePixelsToLogical(new Point(adjustedOffset.Left, adjustedOffset.Top), _hwnd);
 				return _window.RestoreBounds.Location != windowTopLeft;
 			}
 		}
@@ -438,14 +438,14 @@ namespace Microsoft.Windows.Shell
 			if (lRet != IntPtr.Zero) return lRet;
 			var mousePosScreen = new Point(Utility.GET_X_LPARAM(lParam), Utility.GET_Y_LPARAM(lParam));
 			var windowPosition = _GetWindowRect();
-			var ht = _HitTestNca(DpiHelper.DeviceRectToLogical(windowPosition), DpiHelper.DevicePixelsToLogical(mousePosScreen));
+			var ht = _HitTestNca(DpiHelper.DeviceRectToLogical(windowPosition, _hwnd), DpiHelper.DevicePixelsToLogical(mousePosScreen, _hwnd));
 			// Don't blindly respect HTCAPTION.
 			// We want UIElements in the caption area to be actionable so run through a hittest first.
 			if (ht != HT.CLIENT)
 			{
 				var mousePosWindow = mousePosScreen;
 				mousePosWindow.Offset(-windowPosition.X, -windowPosition.Y);
-				mousePosWindow = DpiHelper.DevicePixelsToLogical(mousePosWindow);
+				mousePosWindow = DpiHelper.DevicePixelsToLogical(mousePosWindow, _hwnd);
 				var inputElement = _window.InputHitTest(mousePosWindow);
 				if (inputElement != null && WindowChrome.GetIsHitTestVisibleInChrome(inputElement)) ht = HT.CLIENT;
 			}
@@ -773,7 +773,7 @@ namespace Microsoft.Windows.Shell
 				try
 				{
 					var shortestDimension = Math.Min(windowSize.Width, windowSize.Height);
-					var topLeftRadius = DpiHelper.LogicalPixelsToDevice(new Point(_chromeInfo.CornerRadius.TopLeft, 0)).X;
+					var topLeftRadius = DpiHelper.LogicalPixelsToDevice(new Point(_chromeInfo.CornerRadius.TopLeft, 0), _hwnd).X;
 					topLeftRadius = Math.Min(topLeftRadius, shortestDimension / 2);
 
 					if (_IsUniform(_chromeInfo.CornerRadius))
@@ -789,7 +789,7 @@ namespace Microsoft.Windows.Shell
 						// of the window.
 						hRegion = _CreateRoundRectRgn(new Rect(0, 0, windowSize.Width / 2 + topLeftRadius, windowSize.Height / 2 + topLeftRadius), topLeftRadius);
 
-						var topRightRadius = DpiHelper.LogicalPixelsToDevice(new Point(_chromeInfo.CornerRadius.TopRight, 0)).X;
+						var topRightRadius = DpiHelper.LogicalPixelsToDevice(new Point(_chromeInfo.CornerRadius.TopRight, 0), _hwnd).X;
 						topRightRadius = Math.Min(topRightRadius, shortestDimension / 2);
 						var topRightRegionRect = new Rect(0, 0, windowSize.Width / 2 + topRightRadius, windowSize.Height / 2 + topRightRadius);
 						topRightRegionRect.Offset(windowSize.Width / 2 - topRightRadius, 0);
@@ -797,7 +797,7 @@ namespace Microsoft.Windows.Shell
 
 						_CreateAndCombineRoundRectRgn(hRegion, topRightRegionRect, topRightRadius);
 
-						var bottomLeftRadius = DpiHelper.LogicalPixelsToDevice(new Point(_chromeInfo.CornerRadius.BottomLeft, 0)).X;
+						var bottomLeftRadius = DpiHelper.LogicalPixelsToDevice(new Point(_chromeInfo.CornerRadius.BottomLeft, 0), _hwnd).X;
 						bottomLeftRadius = Math.Min(bottomLeftRadius, shortestDimension / 2);
 						var bottomLeftRegionRect = new Rect(0, 0, windowSize.Width / 2 + bottomLeftRadius, windowSize.Height / 2 + bottomLeftRadius);
 						bottomLeftRegionRect.Offset(0, windowSize.Height / 2 - bottomLeftRadius);
@@ -805,7 +805,7 @@ namespace Microsoft.Windows.Shell
 
 						_CreateAndCombineRoundRectRgn(hRegion, bottomLeftRegionRect, bottomLeftRadius);
 
-						var bottomRightRadius = DpiHelper.LogicalPixelsToDevice(new Point(_chromeInfo.CornerRadius.BottomRight, 0)).X;
+						var bottomRightRadius = DpiHelper.LogicalPixelsToDevice(new Point(_chromeInfo.CornerRadius.BottomRight, 0), _hwnd).X;
 						bottomRightRadius = Math.Min(bottomRightRadius, shortestDimension / 2);
 						var bottomRightRegionRect = new Rect(0, 0, windowSize.Width / 2 + bottomRightRadius, windowSize.Height / 2 + bottomRightRadius);
 						bottomRightRegionRect.Offset(windowSize.Width / 2 - bottomRightRadius, windowSize.Height / 2 - bottomRightRadius);
@@ -896,8 +896,8 @@ namespace Microsoft.Windows.Shell
 				_hwndSource.CompositionTarget.BackgroundColor = Colors.Transparent;
 
 				// Thickness is going to be DIPs, need to convert to system coordinates.
-				var deviceTopLeft = DpiHelper.LogicalPixelsToDevice(new Point(_chromeInfo.GlassFrameThickness.Left, _chromeInfo.GlassFrameThickness.Top));
-				var deviceBottomRight = DpiHelper.LogicalPixelsToDevice(new Point(_chromeInfo.GlassFrameThickness.Right, _chromeInfo.GlassFrameThickness.Bottom));
+				var deviceTopLeft = DpiHelper.LogicalPixelsToDevice(new Point(_chromeInfo.GlassFrameThickness.Left, _chromeInfo.GlassFrameThickness.Top), _hwnd);
+				var deviceBottomRight = DpiHelper.LogicalPixelsToDevice(new Point(_chromeInfo.GlassFrameThickness.Right, _chromeInfo.GlassFrameThickness.Bottom), _hwnd);
 
 				var dwmMargin = new MARGINS
 				{
