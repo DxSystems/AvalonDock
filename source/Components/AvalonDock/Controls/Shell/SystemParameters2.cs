@@ -1,4 +1,4 @@
-﻿/************************************************************************
+/************************************************************************
    AvalonDock
 
    Copyright (C) 2007-2013 Xceed Software Inc.
@@ -88,7 +88,7 @@ namespace Microsoft.Windows.Shell
 		private void _InitializeCaptionHeight()
 		{
 			var ptCaption = new Point(0, NativeMethods.GetSystemMetrics(SM.CYCAPTION));
-			WindowCaptionHeight = DpiHelper.DevicePixelsToLogical(ptCaption).Y;
+			WindowCaptionHeight = DpiHelper.DevicePixelsToLogical(ptCaption, _messageHwnd.Handle).Y;
 		}
 
 		private void _UpdateCaptionHeight(IntPtr wParam, IntPtr lParam)
@@ -99,7 +99,7 @@ namespace Microsoft.Windows.Shell
 		private void _InitializeWindowResizeBorderThickness()
 		{
 			var frameSize = new Size(NativeMethods.GetSystemMetrics(SM.CXSIZEFRAME), NativeMethods.GetSystemMetrics(SM.CYSIZEFRAME));
-			var frameSizeInDips = DpiHelper.DeviceSizeToLogical(frameSize);
+			var frameSizeInDips = DpiHelper.DeviceSizeToLogical(frameSize, _messageHwnd.Handle);
 			WindowResizeBorderThickness = new Thickness(frameSizeInDips.Width, frameSizeInDips.Height, frameSizeInDips.Width, frameSizeInDips.Height);
 		}
 
@@ -111,9 +111,9 @@ namespace Microsoft.Windows.Shell
 		private void _InitializeWindowNonClientFrameThickness()
 		{
 			var frameSize = new Size(NativeMethods.GetSystemMetrics(SM.CXSIZEFRAME), NativeMethods.GetSystemMetrics(SM.CYSIZEFRAME));
-			var frameSizeInDips = DpiHelper.DeviceSizeToLogical(frameSize);
+			var frameSizeInDips = DpiHelper.DeviceSizeToLogical(frameSize, _messageHwnd.Handle);
 			var captionHeight = NativeMethods.GetSystemMetrics(SM.CYCAPTION);
-			var captionHeightInDips = DpiHelper.DevicePixelsToLogical(new Point(0, captionHeight)).Y;
+			var captionHeightInDips = DpiHelper.DevicePixelsToLogical(new Point(0, captionHeight), _messageHwnd.Handle).Y;
 			WindowNonClientFrameThickness = new Thickness(frameSizeInDips.Width, frameSizeInDips.Height + captionHeightInDips, frameSizeInDips.Width, frameSizeInDips.Height);
 		}
 
@@ -189,7 +189,7 @@ namespace Microsoft.Windows.Shell
 				rcAllCaptionButtons.Top - rcWindow.Top,
 				rcAllCaptionButtons.Width,
 				rcAllCaptionButtons.Height);
-			var logicalCaptionLocation = DpiHelper.DeviceRectToLogical(deviceCaptionLocation);
+			var logicalCaptionLocation = DpiHelper.DeviceRectToLogical(deviceCaptionLocation, _messageHwnd.Handle);
 			WindowCaptionButtonsLocation = logicalCaptionLocation;
 		}
 

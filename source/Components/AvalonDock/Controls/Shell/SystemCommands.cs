@@ -1,4 +1,4 @@
-﻿/************************************************************************
+/************************************************************************
    AvalonDock
 
    Copyright (C) 2007-2013 Xceed Software Inc.
@@ -69,7 +69,8 @@ namespace Microsoft.Windows.Shell
 		public static void ShowSystemMenu(Window window, Point screenLocation)
 		{
 			Verify.IsNotNull(window, nameof(window));
-			ShowSystemMenuPhysicalCoordinates(window, DpiHelper.LogicalPixelsToDevice(screenLocation));
+			var hWnd = new WindowInteropHelper(window).Handle;
+			ShowSystemMenuPhysicalCoordinates(window, DpiHelper.LogicalPixelsToDevice(screenLocation, hWnd));
 		}
 
 		internal static void ShowSystemMenuPhysicalCoordinates(Window window, Point physicalScreenLocation)
